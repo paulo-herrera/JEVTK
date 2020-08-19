@@ -43,7 +43,7 @@ To export a cylinder as an unstructured grid:
   cylinderToVTK("cylinder", x0, y0, z0, z1, radius, nlayers, npilars, cellData, pointData);
 ```
 
-<a href="url"><img src="https://github.com/paulo-herrera/PyEVTK/blob/master/images/open_pit.png" align="center" height="400" width="550" ></a>
+<a href="url"><img src="https://github.com/paulo-herrera/JEVTK/blob/master/src/com/iidp/vtk/high_level/examples/images/ExCylinder.png" align="center" height="400" width="550" ></a>
 
 # INSTALLATION
 
