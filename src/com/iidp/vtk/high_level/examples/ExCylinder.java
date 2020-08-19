@@ -31,7 +31,7 @@ public class ExCylinder {
 
         cellData.addData("layer", lay);
 
-        cylinderToVTK("cylinder", x0, y0, z0, z1, radius, nlayers, npilars, cellData, pointData);
+        cylinderToVTK("test/cylinder", x0, y0, z0, z1, radius, nlayers, npilars, cellData, pointData);
 
         System.out.println("*** ALL DONE ***");
     }
