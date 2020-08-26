@@ -22,15 +22,16 @@ import com.iidp.vtk.high_level.data.GridData;
 
 import java.io.File;
 import java.lang.Math;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Provides a high-level interface to export data to VTK similar to the one for Python in EVTK.
  * <p>
- * There is one writer for almost each grid type that is supported by VTK.
- * This interface is supposed to be used with the data containers in the data package, thus it
+ * There is one writer for almost each grid type that is supported by VTK. For a description of
+ * grid types supported by VTK see <a href="https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf">VTK file specification.</a>.
+ * <p>
+ * This interface is supposed to be used with the GridData containers in the high_level.data package, thus it
  * introduces some memory and computational overhead, because data in arrays are copied to Lists that
  * contain objects that store numbers. Then, there is also some overhead for the garbage collector.
  * However, the cost of using this interface should be relatively small for typical grids that
@@ -48,13 +49,13 @@ public class EVTK {
     /**
      * Exports an image defined as a Cartesian 3D grid with constant spacing in each direction.
      *
-     * @param path:      path to save grid file without extension.
+     * @param path:      path to saved grid file without extension.
      * @param ncells:    number of cells in each direction as a int[3].
      * @param origin:    coordinates of orgin of the grid as a double[3].
      * @param spacing:   grid spacing in each direction as a double[3].
      * @param cellData:  a container with data for each cell created with makeCellData.
      * @param pointData: a container with data for each point created with makePointData.
-     * @param comments: list of comments to be included as part of the xml section.
+     * @param comments:  list of comments to be included as part of the XML section.
      * @return the full path to where the grid file was saved including extension.
      * @throws Exception
      */
@@ -91,7 +92,6 @@ public class EVTK {
         vw.closePiece();
         vw.closeImageData();
 
-
         // Open data section
         vw.openAppendedData();
 
@@ -118,8 +118,8 @@ public class EVTK {
      * @param y:          y-coordinate of grid nodes. It should have ny + 1 elements, where ny is the number of cells.
      * @param z:          z-coordinate of grid nodes. It should have nz + 1 elements, where nz is the number of cells.
      * @param cellData:   a container with data for each cell created with makeCellData.
-     * @param pointData:a container with data for each point created with makePointData.
-     * @return full path with extension where grid file was saved.
+     * @param pointData:  a container with data for each point created with makePointData.
+     * @return the full path to where the grid file was saved including extension.
      */
     public static String rectilinearGridToVTK(String path, double[] x, double[] y, double[] z, GridData cellData, GridData pointData, List<String> comments) throws Exception {
         var full_path = path + ".vtr";
@@ -183,16 +183,17 @@ public class EVTK {
     /**
      * Exports a logically structured grid that is composed of hexahedral cells.
      * <p>
-     * There is also another option to export a structured grid that also allows
-     * building it from zero, using the StructuredGrid class.
+     * There is also another option for exporting a structured grid that also allows
+     * building it from zero, using the StructuredGrid class in the com.iidp.vtk.grids package.
+     * @see {@link com.iidp.vtk.grids.StructuredGrid}
      *
      * @param path:       full path withouth extension where grid file should be saved.
      * @param x:          3D array with x coordinate of nodes in the grid, i.e. x[i][j][k] = x of node (i,j,k)
      * @param y:          3D array with x coordinate of nodes in the grid, i.e. y[i][j][k] = y of node (i,j,k)
      * @param z:          3D array with x coordinate of nodes in the grid, i.e. z[i][j][k] = z of node (i,j,k)
      * @param cellData:   a container with data for each cell created with makeCellData.
-     * @param pointData:a container with data for each point created with makePointData.
-     * @return full path where grid file was saved.
+     * @param pointData:  a container with data for each point created with makePointData.
+     * @return the full path to where the grid file was saved including extension.
      */
     public static String structuredGridToVTK(String path, double[][][] x, double[][][] y, double[][][] z, GridData cellData, GridData pointData, List<String> comments) throws Exception {
         var full_path = path + ".vts";
@@ -261,25 +262,24 @@ public class EVTK {
     }
 
     /**
-     * Exports an unstructured grid as VTK grid file.
+     * Exports an unstructured grid as a VTK grid file.
      *
-     * @param path:
+     * @param path:         path to where file should be saved without extension.
      * @param x:            1D array with x-coordinate of the nodes.
-     * @param y:            1D array with y-ccordinate of the nodes.
-     * @param z:            1D array with z-ccordinate of the nodes.
+     * @param y:            1D array with y-coordinate of the nodes.
+     * @param z:            1D array with z-coordinate of the nodes.
      * @param connectivity: 1D array that defines the vertices associated to each element.
      *                      Together with offsets define the connectivity or topology of the grid.
      *                      It is assumed that vertices in an element are listed consecutively.
      * @param offsets:      1D array with the index of the last vertex of each element in the connectivity array.
-     *                      It should have length nelem, where nelem is the number of cells or elements in the grid.
+     *                      It should have length ncells, where ncells is the number of cells in the grid.
      * @param cell_types:   1D array with an integer that defines the cell type of each element in the grid.
-     *                      It should have size nelem. This should be assigned from VTK_CELL_TYPE.XXX,
-     *                      where XXXX represent the type of cell.
-     *                      Check the VTK file format specification for allowed cell types.
+     *                      It should have size ncells. This should be assigned from VTK_CELL_TYPE.XXX,
+     *                      where XXXX represent the cell type.
      * @param cellData:     a container with data for each cell created with makeCellData.
      * @param pointData:    a container with data for each point created with makePointData.
      * @param comments:     list comments as strings.
-     * @return full path including extension where grid file was saved.
+     * @return the full path to where the grid file was saved including extension.
      */
     public static String unstructuredGridToVTK(String path, double[] x, double[] y, double[] z, int[] connectivity, int[] offsets,
                                                VTK_CELL_TYPE[] cell_types, GridData cellData, GridData pointData, List<String> comments) throws Exception {
@@ -347,7 +347,7 @@ public class EVTK {
     }
 
     /**
-     * Exports points with associated data as a VTK Unstructured Grid.
+     * Exports points with associated data as a VTK unstructured grid.
      * <p>
      * Internally, this method calls unstructuredGridToVTK with the appropriated arrays that describe the
      * topology of the unstructured grid that represents the group of points.
@@ -357,7 +357,7 @@ public class EVTK {
      * @param y:         1D array with y coordinate.
      * @param z:         1D array with z coordinate.
      * @param pointData: Data stored in a container that is associated to each point, e.g. Temperature.
-     * @return full path to saved grid file.
+     * @return the full path to where the grid file was saved including extension.
      * @throws Exception
      */
     public static String pointsToVTK(String path, double[] x, double[] y, double[] z, GridData pointData, List<String> comments) throws Exception {
@@ -382,21 +382,21 @@ public class EVTK {
     /**
      * Exports cylinder as VTK unstructured grid.
      *
-     * @return Full path to saved file.
-     * @param path: path to file without extension.
-     * @param x0: center of cylinder.
-     * @param y0: center of cylinder.
-     * @param z0: lower and top elevation of the cylinder.
-     * @param z1: lower and top elevation of the cylinder.
-     * @param radius: radius of cylinder.
-     * @param nlayers: Number of layers in z direction to divide the cylinder.
-     * @param npilars: Number of points around the diameter of the cylinder.
-     * Higher value gives higher resolution to represent the curved shape.
-     * @param cellData: Data container with 1D arrays that store data associated to each cell.
-     * Arrays should have number of elements equal to ncells = npilars * nlayers.
-     * @param pointData: Data container with 1D arrays that store data associated to each point.
-     * Arrays should have number of elements equal to npoints = npilars * (nlayers + 1).
+     * @param path:    path to file without extension.
+     * @param x0:      center of cylinder.
+     * @param y0:      center of cylinder.
+     * @param z0:      lower and top elevation of the cylinder.
+     * @param z1:      lower and top elevation of the cylinder.
+     * @param radius:  radius of cylinder.
+     * @param nlayers: number of layers in z direction to divide the cylinder.
+     * @param npilars: number of points around the diameter of the cylinder used to specify the position of pilars.
+     *                 Hence, higher value gives higher resolution to represent the curved shape.
+     * @param cellData: GridData container with 1D arrays that store data associated to each cell.
+     *                  Arrays should have number of elements equal to ncells = npilars * nlayers.
+     * @param pointData: Data container with 1D arrays that store data associated to each node.
+     *                   Arrays should have number of elements equal to npoints = npilars * (nlayers + 1).
      * @param comments: List of comments as strings.
+     * @return the full path to where the grid file was saved including extension.
      */
     public static String cylinderToVTK(String path, double x0, double y0, double z0,
                                        double z1, double radius, int nlayers, int npilars,
@@ -481,14 +481,14 @@ public class EVTK {
     /**
      * Exports line segments that joint 2 points and associated data.
      *
-     * @param path: name of the file without extension where data should be saved.
-     * @param x, y, z: 1D arrays with coordinates of the vertex of the lines.
-     *                 It is assumed that each line is defined by two points,
-     *                 then the lenght of the arrays should be equal to 2 * number of lines.
-     * @param cellData: GridData with variables associated to each line.
+     * @param path:     name of the file without extension where data should be saved.
+     * @param x, y, z:  1D arrays with coordinates of the vertex of the lines.
+     *                  It is assumed that each line is defined by two points,
+     *                  then the lenght of the arrays should be equal to 2 * number of lines.
+     * @param cellData:  GridData with variables associated to each line.
      * @param pointData: GridData with variables associated to each vertex.
-     * @param comments: list of comment strings, which will be added to the header section of the file.
-     * @return full path to saved file.
+     * @param comments:  list of comment strings, which will be added to the header section of the file.
+     * @return full path to saved file including extension.
      */
     public static String linesToVTK(String path, double[] x, double[] y, double[] z,
                                     GridData cellData, GridData pointData, List<String> comments) throws Exception {
@@ -528,17 +528,17 @@ public class EVTK {
     /**
      * Exports line segments that join 2 or more points and associated data.
      *
-     * @param path: name of the file without extension where data should be saved.
+     * @param path:    name of the file without extension where data should be saved.
      * @param x, y, z: 1D arrays with coordinates of the vertices of the lines.
      *                 It is assumed that each line connects diffent number of points.
      * @param pointsPerLine: 1D array that defines the number of points associated to each line.
      *                       Thus, the length of this array defines the number of lines.
-     *                       It also implicitly defines the connectivity or topology of the set of lines.
+     *                       It also implicitly defines the connectivity of the set of lines.
      *                       It is assumed that points that define a line are consecutive in the x, y and z arrays.
-     * @param cellData: GridData with variables associated to each line.
+     * @param cellData:  GridData with variables associated to each line.
      * @param pointData: GridData with variables associated to each vertex.
      * @param comments: list of comment strings, which will be added to the header section of the file.
-     * @return full path to saved file.
+     * @return full path to saved file including extension.
      */
     public static String polylinesToVTK(String path, double[] x, double[] y, double[] z, int[] pointsPerLine,
                                     GridData cellData, GridData pointData, List<String> comments) throws Exception {
@@ -576,25 +576,24 @@ public class EVTK {
     }
 
     /**
-     * Exports polygons defines by 3 or more points and associated data.
+     * Exports polygons defined by 3 or more points and associated data.
      *
-     * @param path: name of the file without extension where data should be saved.
+     * @param path:    name of the file without extension where data should be saved.
      * @param x, y, z: 1D arrays with coordinates of the vertices of the lines.
      *                 It is assumed that each line connects diffent number of points.
      * @param pointsPerPolygon: 1D array that defines the number of points associated to each polygon.
      *                          It is assumed that points that define a line are consecutive in the x, y and z arrays,
-     *                        and that they are given in the order expected by VTK (counter-clock wise).
-     *                        A polygon defined by 4 nodes, should have associated a pointsPerPolygon = 4, however
-     *                        internally the method repeats the first node in the connectivity list to close
-     *                        the loop of the polygon.
-     * @param cellData: GridData with variables associated to each line.
-     * @param pointData: GridData with variables associated to each vertex.
-     * @param comments: list of comment strings, which will be added to the header section of the file.
-     * @return full path to saved file.
+     *                          and that they are given in the order expected by VTK (counter-clock wise).
+     *                          A polygon defined by 4 nodes, should have associated a pointsPerPolygon = 4, however
+     *                          internally the method repeats the first node in the connectivity list to close
+     *                          the loop of the polygon.
+     * @param cellData:  GridData with variables associated to each line.
+     * @param pointData: GridData with variables associated to each node.
+     * @param comments:  list of comment strings, which will be added to the header section of the file.
+     * @return full path to saved file including extension.
      */
     public static String polygonsToVTK(String path, double[] x, double[] y, double[] z, int[] pointsPerPolygon,
                                         GridData cellData, GridData pointData, List<String> comments) throws Exception {
-
 
         var ncells =  pointsPerPolygon.length;
 
@@ -641,13 +640,14 @@ public class EVTK {
         return full_path;
     }
 
-
     /**
-     * Creates and returns a VTKGroup that can be used to specify links to multiple files that
+     * Creates and returns a VTKGroup that can be used to specify links to multiple VTK files that
      * can be used for animations or merging multiple files in a single scene.
+     * @see: The example contained in the high level interface
+     * {@link com.iidp.vtk.high_level.examples.ExGroup}
      *
      * @param path: path to file where group should be saved without extension.
-     * @return VTKGroup, that can be used to add files.
+     * @return VTKGroup to which path to other VTK files can be added.
      * @throws Exception
      */
     public static VTKGroup createGroup(String path) throws Exception {
@@ -655,14 +655,26 @@ public class EVTK {
         return new VTKGroup(new File(full_path) );
     }
 
+    /**
+     * Creates a GridData container to add/store data associated to each cell of the grid.
+     * @return new GridData container.
+     */
     public static GridData makeCellData() {
         return new GridData("cellData");
     }
 
+    /**
+     * Creates a GridData container to add/store data associated to each node of the grid.
+     * @return new GridData container.
+     */
     public static GridData makePointData() {
         return new GridData("pointData");
     }
 
+    /**
+     * Creates a List\<String\> to add/store text that should appear as comments in the XMl section.
+     * @return an empty List\<String\>.
+     */
     public static List<String> makeComments() {
         var comments = new ArrayList<String>();
         return comments;
