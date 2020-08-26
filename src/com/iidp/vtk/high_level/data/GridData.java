@@ -22,19 +22,29 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Container to add and store data associated to cells or nodes of the grid.
+ *
+ * This is a convenience class to be used together with the methods in the high level
+ * interface provided in the EVTK class {@link com.iidp.high_level.EVTK}.
+ */
 public class GridData {
     String type; // cellData or pointData
     List<PairData> pd;
 
+    /**
+     * Constructor should preferely called through the static methods in EVTK.
+     * @param _type: either "cellData" or "pointData".
+     */
     public GridData(String _type) {
         type = _type;
         pd = new ArrayList<PairData>();
     }
 
     /**
-     * Add data to this container.
+     * Adds data to this container.
      *
-     * @param name:  name of the data.
+     * @param name:  name of the variable.
      * @param _data: values that should be associated to cells or points of the grid.
      *               NOTE: array values must be given in the VTK grid order,
      *               i.e. x direction changing fastest, then y, then z.
@@ -45,9 +55,9 @@ public class GridData {
     }
 
     /**
-     * Add data to this container.
+     * Adds data to this container.
      *
-     * @param name:  name of the data.
+     * @param name:  name of the variable.
      * @param _data: values that should be associated to cells or points of the grid.
      *               NOTE: array values must be given in the VTK grid order,
      *               i.e. x direction changing fastest, then y, then z.
@@ -58,8 +68,8 @@ public class GridData {
     }
 
     /**
-     *  Writes array declaration to xml section of file.
-     *  Actual data must be appended to the binary section later on.
+     *  Writes array declaration to XML section of the file.
+     *  Actual data must be appended to the binary section later.
      *
      * @param vw: VTKWriter
      * @param nnpoints: number of points in grid
@@ -71,9 +81,10 @@ public class GridData {
     }
 
     /**
-     * Writes data information to xml section of file.
-     * @param vw
-     * @param nnpoints
+     *  Writes array declaration to XML section of the file and write data as ASCII text.
+     *
+     * @param vw:           writer used to create VTK file.
+     * @param nnpoints:     number of nodes in the grid.
      * @param writeAsASCII: If true, data is appended to the XML section as text.
      *                      If false, it only adds a declaration into the XML section,
      *                      but data must be manually appendended to the binary section later.
@@ -113,7 +124,11 @@ public class GridData {
     }
 
     /**
-     * Writes data to binary section of the file.
+     * Writes data previously declared in the XML section to binary section of the file.
+     *
+     * @param vw: writer used to create this file.
+     * @param nnpoints: number of nodes in grid.
+     * @param nncells: number of cells in grid.
      */
     public void appendData(VTKWriter vw, int nnpoints, int nncells) throws Exception {
         if (pd.size() == 0) return;
