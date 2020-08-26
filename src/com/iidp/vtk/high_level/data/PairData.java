@@ -16,15 +16,15 @@
  */
 package com.iidp.vtk.high_level.data;
 
+import com.iidp.vtk.low_level.VTKWriter;
 import com.iidp.vtk.low_level.VTK_DATA_TYPE;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 /**
- * Container to store data.
- *
- * @author Paulo A. Herrera paulo.herrera.eirl at gmail.com
+ * Container to store data associated to cells or nodes of the grid.
  */
 public class PairData {
     public final String name;
@@ -64,6 +64,14 @@ public class PairData {
         } else if (type == VTK_DATA_TYPE.INT32) {
             Helpers.writeInt(stream, idata);
         }
+    }
+
+    public void addToVTKAsAscii(VTKWriter vw) throws Exception {
+       if (type == VTK_DATA_TYPE.FLOAT64) {
+           vw.addDataArrayDoubleASCII(name, ddata);
+       } else if (type == VTK_DATA_TYPE.INT32) {
+           vw.addDataArrayIntASCII(name, idata);
+       }
     }
 
     public static PairData makeDoublePair(String name, List<Double> data) {

@@ -21,6 +21,8 @@ import com.iidp.vtk.low_level.VTKXmlWriter;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Writes binary VTK files.
@@ -52,6 +54,10 @@ public class VTKWriter {
 
         xw = new VTKXmlWriter(file);
         xw.addDeclaration();
+
+        var sdate = LocalDateTime.now().toString();
+        xw.addComment( "Created: " + sdate);
+
         xw.openElement("VTKFile").addAttribute("type", type.toString()).
                 addAttribute("version", "0.1").addAttribute("byte_order", VTK_BYTE_ORDER);
 
@@ -259,6 +265,11 @@ public class VTKWriter {
         return this;
     }
 
+    public final VTKWriter addComments(List<String> comments) throws Exception {
+        xw.addComments(comments);
+        return this;
+    }
+
     /**
      * Add data array declaration to XML section of file.
      *
@@ -297,6 +308,54 @@ public class VTKWriter {
      *
      * @param name data description, e.g. "Pressure", etc.
      * @param data data values.
+     */
+    public final VTKWriter addDataArrayASCII(String name, int[] data) throws IOException {
+        xw.openElement("DataArray").addAttribute("type", VTK_DATA_TYPE.INT32.toString()).
+                addAttribute("Name", name).addAttribute("NumberOfComponents", 1).
+                addAttribute("format", "ascii");
+        xw.addText("");
+        for (int i = 0; i < data.length; i++) {
+            xw.out.writeBytes(Integer.toString(data[i]));
+            xw.out.writeBytes(" ");
+        }
+        xw.closeElement("DataArray");
+
+        // offset += nelements * ncomponents * type.sizeof() + 4; // add 4 to indicate array size
+        return this;
+    }
+
+    /**
+     * Add data array in ASCII format.
+     *
+     * Array is immediately written to file, so it must not be appended in binary
+     * section.
+     *
+     * @param name data description, e.g. "Pressure", etc.
+     * @param data data values.
+     */
+    public final VTKWriter addDataArrayIntASCII(String name, List<Integer> data) throws IOException {
+        xw.openElement("DataArray").addAttribute("type", VTK_DATA_TYPE.INT32.toString()).
+                addAttribute("Name", name).addAttribute("NumberOfComponents", 1).
+                addAttribute("format", "ascii");
+        xw.addText("");
+        for (int i = 0; i < data.size(); i++) {
+            xw.out.writeBytes(Integer.toString(data.get(i)));
+            xw.out.writeBytes(" ");
+        }
+        xw.closeElement("DataArray");
+
+        // offset += nelements * ncomponents * type.sizeof() + 4; // add 4 to indicate array size
+        return this;
+    }
+
+    /**
+     * Add data array in ASCII format.
+     *
+     * Array is immediately written to file, so it must not be appended in binary
+     * section.
+     *
+     * @param name data description, e.g. "Pressure", etc.
+     * @param data data values.
      * TODO: CHECK THIS METHOD IT USED TO WORK FINE.
      */
     public final VTKWriter addDataArrayASCII(String name, double[] data) throws IOException {
@@ -306,6 +365,21 @@ public class VTKWriter {
         xw.addText("");
         for (int i = 0; i < data.length; i++) {
             xw.out.writeBytes(Double.toString(data[i]));
+            xw.out.writeBytes(" ");
+        }
+        xw.closeElement("DataArray");
+
+        // offset += nelements * ncomponents * type.sizeof() + 4; // add 4 to indicate array size
+        return this;
+    }
+
+    public final VTKWriter addDataArrayDoubleASCII(String name, List<Double> data) throws IOException {
+        xw.openElement("DataArray").addAttribute("type", VTK_DATA_TYPE.FLOAT64.toString()).
+                addAttribute("Name", name).addAttribute("NumberOfComponents", 1).
+                addAttribute("format", "ascii");
+        xw.addText("");
+        for (int i = 0; i < data.size(); i++) {
+            xw.out.writeBytes(Double.toString(data.get(i)));
             xw.out.writeBytes(" ");
         }
         xw.closeElement("DataArray");

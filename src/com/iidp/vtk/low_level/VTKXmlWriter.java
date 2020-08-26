@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Writes XML to a binary file.
@@ -59,7 +60,10 @@ class VTKXmlWriter {
     }
 
     /**
-     * This doesn't work. I don't know why.
+     * Add text as a comment in the XML section.
+     * This method does not make any check for forbidden or special characters in XML comments.
+     * This method should be called right after creating the file to avoid including comments in the
+     * wrong place within the header.
      */
     public final VTKXmlWriter addComment(String text) throws IOException {
         if (openTag) {
@@ -68,9 +72,32 @@ class VTKXmlWriter {
         }
         out.writeBytes("<!-- ");
         out.writeBytes(text);
-        out.writeBytes(" -->");
+        out.writeBytes(" -->"); // think about adding a new line here
         return this;
     }
+
+    /**
+     * Add text in comments as comments in the XML section of the VTK file.
+     * It just calls addComment for each comment in the list.
+     * @param comments: list of strings.
+     * @return this VTKXmlWriter
+     */
+    public final VTKXmlWriter addComments(List<String> comments) throws IOException {
+        for(String c: comments) {
+            addComment(c);
+        }
+        return this;
+    }
+
+   /* def addComments(self, comments):
+            """ Insert strings stored in comments list as comments into the xml header section of the file.
+            This method does not make any check for forbidden or special characters in XML comments.
+            This method should be called right after creating the file to avoid including comments in the
+            wrong place within the header. BE AWARE!!!
+        """
+            assert not self.appendedDataIsOpen
+        for c in comments:
+            self.xml.addComment(c)*/
 
     /**
      * Open element tag, without closing it to add attributes later.

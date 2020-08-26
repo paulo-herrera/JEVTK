@@ -20,6 +20,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 
 /**
  * Helper class to write a VTKGroup file that can be used for visualization of
@@ -42,6 +43,8 @@ public class VTKGroup {
                 .addAttribute("type", "Collection")
                 .addAttribute("version", "0.1")
                 .addAttribute("byte_order", "BigEndian");
+        var sdate = LocalDateTime.now().toString();
+        xml.addComment("Created: " + sdate);
         xml.addElement("Collection");
     }
 

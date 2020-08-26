@@ -121,4 +121,16 @@ public class XMLBuilder {
         return bf.array();
     }
 
+    public static void main(String[] args) {
+        var xml = new XMLBuilder();
+        xml.addDeclaration();
+        xml.addComment("Useless comment");
+        xml.addElement("Root");
+        xml.addAttribute("id", "file0");
+        xml.addElement("text");
+        xml.addText("Some nice text");
+                xml.closeElement("text");
+        System.out.println(xml);
+    }
+
 }
