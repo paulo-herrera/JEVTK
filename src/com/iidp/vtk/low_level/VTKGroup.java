@@ -24,15 +24,13 @@ import java.time.LocalDateTime;
 
 /**
  * Helper class to write a VTKGroup file that can be used for visualization of
- * time dependent data.
- *
- * @author Paulo A. Herrera.
+ * time dependent data or for combining multiples grid files.
  */
 public class VTKGroup {
     PrintWriter stream;
     XMLBuilder xml;
 
-    /** Create a group in file. */
+    /** Create a group file */
     public VTKGroup(File file) throws Exception {
         stream = new PrintWriter(
                 new BufferedWriter(
@@ -61,6 +59,7 @@ public class VTKGroup {
      *
      * @param filename path to file.
      * @param time simulation time. This will be used to display time in animations.
+     * @param part number of grid file if group is used to combine multiple files.
      * @return this VTKGroup.
      */
     public VTKGroup addFile(String filename, double time, int part) {

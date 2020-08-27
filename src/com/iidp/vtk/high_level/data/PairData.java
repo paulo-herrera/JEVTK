@@ -20,11 +20,14 @@ import com.iidp.vtk.low_level.VTKWriter;
 import com.iidp.vtk.low_level.VTK_DATA_TYPE;
 
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 /**
  * Container to store data associated to cells or nodes of the grid.
+ * It also provides methods to append data to a binary file or write it
+ * as text as part of the XML section of the file.
+ *
+ * Current version can store double or int data.
  */
 public class PairData {
     public final String name;
@@ -38,6 +41,15 @@ public class PairData {
         return _size;
     }
 
+    /**
+     * Creates a PairData to store a double or int variable.
+     * This should not be called directly, PairData are created
+     * though the static factory methods.
+     *
+     * @param _name:  name of the variable.
+     * @param _ddata: double data, if null then _idata should be a list.
+     * @param _idata: int data, if null then _ddata should be a list.
+     */
     private PairData(String _name, List<Double> _ddata, List<Integer> _idata) {
         name = _name;
         VTK_DATA_TYPE _t = null;
@@ -57,6 +69,14 @@ public class PairData {
         assert type != null;
     }
 
+    /**
+     * Appends data stored in this PairData to a binary stream.
+     * NOTE: The data declaration should have been previously included in
+     * the file XML section of the file.
+     *
+     * @param stream: binary stream.
+     * @throws Exception
+     */
     public void appendTo(DataOutputStream stream) throws Exception {
         stream.writeInt(this._size * type.sizeof());
         if (type == VTK_DATA_TYPE.FLOAT64) {
@@ -66,6 +86,12 @@ public class PairData {
         }
     }
 
+    /**
+     * Writes data stored in this PairData as text to the XML section.
+     *
+     * @param vw: writer used to create this file.
+     * @throws Exception
+     */
     public void addToVTKAsAscii(VTKWriter vw) throws Exception {
        if (type == VTK_DATA_TYPE.FLOAT64) {
            vw.addDataArrayDoubleASCII(name, ddata);
@@ -74,20 +100,48 @@ public class PairData {
        }
     }
 
+    /**
+     * Factory method to create a PairData that contains double data.
+     *
+     * @param name: name of the variable.
+     * @param data: data to store.
+     * @return a new PairData.
+     */
     public static PairData makeDoublePair(String name, List<Double> data) {
         return new PairData(name, data, null);
     }
 
+    /**
+     * Factory method to create a PairData that contains double data.
+     *
+     * @param name: name of the variable.
+     * @param data: data to store.
+     * @return a new PairData.
+     */
     public static PairData makeDoublePair(String name, double[] data) {
         var _data = Helpers.createList(data);
         assert _data != null;
         return new PairData(name, _data, null);
     }
 
+    /**
+     * Factory method to create a PairData that contains integer data.
+     *
+     * @param name: name of the variable.
+     * @param data: data to store.
+     * @return a new PairData.
+     */
     public static PairData makeIntegerPair(String name, List<Integer> data) {
         return new PairData(name, null, data);
     }
 
+    /**
+     * Factory method to create a PairData that contains integer data.
+     *
+     * @param name: name of the variable.
+     * @param data: data to store.
+     * @return a new PairData.
+     */
     public static PairData makeIntegerPair(String name, int[] data) {
         var _data = Helpers.createList(data);
         assert _data != null;

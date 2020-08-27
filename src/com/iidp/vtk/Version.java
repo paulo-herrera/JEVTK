@@ -26,12 +26,12 @@ public class Version {
         return MAJOR_REVISION + "." + MINOR_REVISION;
     }
 
-    /** Long revision string including module. bran and tag names */
+    /** Long revision string including module. */
     public static String getLongRevString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("* Module:   ").append(MODULE_NAME).append("\n");
-        sb.append("* Revision: ").append(getRevision()).append("\n");
-        return sb.toString();
+        String sb = "";
+        sb = sb + "* Module:   " + MODULE_NAME + "\n";
+        sb = sb + "* Revision: " + getRevision() + "\n";
+        return sb;
     }
 
     /** Prints version to std output */

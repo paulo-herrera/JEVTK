@@ -25,18 +25,32 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * Writes binary VTK files.
+ * Helper class to write binary VTK files.
+ *
+ * It provides a set of convenience methods to add/store information to the file and
+ * to write the different parts of the file that defines the grid.
+ * For details, see
+ * <a href=https://vtk.org/wp-content/uploads/2015/04/file-formats.pdf> VTK file specification </a>}
+ *
+ * VTK files in binary XML format are composed of two parts:
+ *   - A XML section written in UTF-8 encoding.
+ *   - A binary section that can be written in Big or Little Endian.
+ *     JEVTK only uses the Big Endian option, which is natively supported in Java.
+ *
+ * For an example of how to use it, see {@link com.iidp.vtk.low_level.examples.ExVTKXmlWriter}
  */
 public class VTKWriter {
 
     /**
      * The binary order of the saved data.
-     *
-     * Java by default write binary data in big endian format
      */
     public final static String VTK_BYTE_ORDER = "BigEndian";
 
     private final VTKXmlWriter xw;
+    /**
+     *  Pointer to the position fo the data in the file.
+     *  It is also used to keep track of the number of bytes added to the file.
+     */
     private int offset = 0;
 
     /**
@@ -72,8 +86,8 @@ public class VTKWriter {
     /**
      * Returns binary stream connected to this writer.
      *
-     * This is useful to directly write into the appended section data that is not
-     * stored in an array.
+     * This is useful to directly write into the appended section data that cannot
+     * be easily added, e.g. because it is not in an array or List.
      *
      * NOTE: Before writing the actual data one must write the size in bytes
      *       of the data array. That usually means writing something like
@@ -509,7 +523,7 @@ public class VTKWriter {
         public static String toString(int[] a) {
             StringBuilder sb = new StringBuilder();
             for (int e : a) {
-                sb.append(Integer.toString(e));
+                sb.append(e);
                 sb.append(" ");
             }
             return sb.toString();
@@ -521,7 +535,7 @@ public class VTKWriter {
         public static String toString(double[] a) {
             StringBuilder sb = new StringBuilder();
             for (double e : a) {
-                sb.append(Double.toString(e));
+                sb.append(e);
                 sb.append(" ");
             }
             return sb.toString();

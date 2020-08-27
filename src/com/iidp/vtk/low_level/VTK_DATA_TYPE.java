@@ -17,7 +17,7 @@
 package com.iidp.vtk.low_level;
 
 /**
- * Enumerates data types allowed in VTK files.
+ * Allowed data types in VTK files.
  */
 public enum VTK_DATA_TYPE {
 

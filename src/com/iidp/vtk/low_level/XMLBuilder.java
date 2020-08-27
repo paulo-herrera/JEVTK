@@ -21,6 +21,10 @@ import java.nio.charset.Charset;
 
 /**
  * Helper class to create a XML file using a StringBuffer.
+ * Data is kept in memory until the file is closed and written to disk.
+ * It uses "US-ASCII" as default encoding.
+ *
+ * See main method for an example of how to use it.
  */
 public class XMLBuilder {
     public final static String ENCODING = "US-ASCII";
@@ -33,6 +37,11 @@ public class XMLBuilder {
         sb = new StringBuffer();
     }
 
+    /**
+     * Adds initial declaration for file including version and encoding.
+     *
+     * @return this XMLBuilder
+     */
     public final XMLBuilder addDeclaration() {
         sb.append("<?xml version=\"1.0\" encoding=\"");
         sb.append(ENCODING);
@@ -41,7 +50,7 @@ public class XMLBuilder {
     }
 
     /**
-     * This doesn't work. I don't know why.
+     * Adds text as a comment.
      */
     public final XMLBuilder addComment(String text) {
         if (openTag) {
@@ -56,6 +65,9 @@ public class XMLBuilder {
 
     /**
      * Open element tag, without closing it to add attributes later.
+     *
+     * @param tag name of the element, e.g. addElement("grid")
+     * @return this XMLBuilder
      */
     public final XMLBuilder addElement(String tag) {
         if (openTag) sb.append(">\n");
@@ -65,6 +77,12 @@ public class XMLBuilder {
         return this;
     }
 
+    /**
+     * Adds text as a child of an open element.
+     *
+     * @param text content that must be added to the file.
+     * @return this XMLBuilder
+     */
     public XMLBuilder addText(String text) {
         if (openTag) {
             sb.append(">\n");
@@ -74,6 +92,13 @@ public class XMLBuilder {
         return this;
     }
 
+    /**
+     * Closes an open element.
+     *
+     * @param tag name of element that will be closed.
+     *            NOTE: It does not check if the tag corresponds to the name of the element that is open.
+     * @return this XMLBuilder
+     */
     public XMLBuilder closeElement(String tag) {
         if (openTag) {
             sb.append(">\n");
@@ -90,9 +115,10 @@ public class XMLBuilder {
     }
 
     /**
-     * Closes tag of simple element without children, i.e. adds "end tag".
+     * Closes tag of simple element without children.
      *
      * This must be called explicitly.
+     * @return this XMLBuilder
      */
     public XMLBuilder closeElement() {
         assert openTag;
@@ -101,6 +127,13 @@ public class XMLBuilder {
         return this;
     }
 
+    /**
+     * Adds attribute to open element.
+     *
+     * @param name attribute name.
+     * @param value attribute value.
+     * @return this XMLBuilder.
+     */
     public XMLBuilder addAttribute(String name, String value) {
         assert openTag;
         sb.append(" ");

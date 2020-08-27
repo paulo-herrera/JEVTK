@@ -17,7 +17,7 @@
 package com.iidp.vtk.low_level;
 
 /**
- * Enumerates allowed VTK file types.
+ * Allowed VTK file types.
  */
 public enum VTK_FILE_TYPE {
     IMAGE_DATA, POLY_DATA, RECTILINEAR_GRID,

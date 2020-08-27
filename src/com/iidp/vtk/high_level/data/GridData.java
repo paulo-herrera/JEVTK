@@ -26,7 +26,7 @@ import java.util.List;
  * Container to add and store data associated to cells or nodes of the grid.
  *
  * This is a convenience class to be used together with the methods in the high level
- * interface provided in the EVTK class {@link com.iidp.high_level.EVTK}.
+ * interface provided in the EVTK class {@link com.iidp.vtk.high_level.EVTK}.
  */
 public class GridData {
     String type; // cellData or pointData
@@ -96,10 +96,10 @@ public class GridData {
         var size = 0;
 
         var default_name = pd.get(0).name;
-        if (type == "pointData") {
+        if (type.equals("pointData") ) {
             vw.openPointData(default_name, null, null, null, null);
             size = nnpoints;
-        } else if (type == "cellData") {
+        } else if (type.equals("cellData") ) {
             vw.openCellData(default_name, null, null, null, null);
             size = nncells;
         }
@@ -116,9 +116,9 @@ public class GridData {
             }
         }
 
-        if (type == "pointData") {
+        if (type.equals("pointData")) {
             vw.closePointData();
-        } else if (type == "cellData"){
+        } else if (type.equals("cellData") ){
             vw.closeCellData();
         }
     }
@@ -133,7 +133,7 @@ public class GridData {
     public void appendData(VTKWriter vw, int nnpoints, int nncells) throws Exception {
         if (pd.size() == 0) return;
 
-        var size = (type == "pointData") ? nnpoints : nncells;
+        var size = (type.equals("pointData")) ? nnpoints : nncells;
         DataOutputStream dos = vw.getStream();
         for (PairData p : pd) {
             assert p.size() == size;

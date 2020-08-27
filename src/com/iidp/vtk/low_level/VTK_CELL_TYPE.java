@@ -17,7 +17,7 @@
 package com.iidp.vtk.low_level;
 
 /**
- * Enumerates cell types allowed in VTK files.
+ *Allowed cell types in VTK files.
  */
 public enum VTK_CELL_TYPE {
     VTK_VERTEX, VTK_POLY_VERTEX, VTK_LINE, VTK_POLY_LINE,
@@ -67,10 +67,19 @@ public enum VTK_CELL_TYPE {
             case VTK_QUADRATIC_HEXAHEDRON:
                 return 25;
         }
+
         assert false;
         return 0;
     }
 
+
+    /**
+     * Given a list of VTK_CELL_TYPE, returns an array with values
+     * of the different cell types allowed in VTK.
+     *
+     * @param t: list of VTK cell types.
+     * @return array of bytes that represent cell types in list t.
+     */
     public static byte[] asByteArray(VTK_CELL_TYPE[] t) {
         var b = new byte[t.length];
         for (int i = 0; i < t.length; i++) {

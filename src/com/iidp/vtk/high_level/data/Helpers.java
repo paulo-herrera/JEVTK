@@ -20,6 +20,9 @@ import java.io.DataOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Helper static methods used by other classes.
+ */
 public class Helpers {
 
     /**
@@ -52,7 +55,7 @@ public class Helpers {
      * Makes a list of double values from an array.
      *
      * @param a: array double[]
-     * @return
+     * @return a List(Double) with elements of array a
      */
     public static List<Double> createList(double[] a) {
         var l = new ArrayList<Double>(a.length);
@@ -67,7 +70,7 @@ public class Helpers {
      * Makes a list of integer values from an array.
      *
      * @param a: array int[]
-     * @return
+     * @return a List<Integer> with elements of array a
      */
     public static List<Integer> createList(int[] a) {
         var l = new ArrayList<Integer>(a.length);

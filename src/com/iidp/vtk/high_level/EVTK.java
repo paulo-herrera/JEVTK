@@ -185,7 +185,7 @@ public class EVTK {
      * <p>
      * There is also another option for exporting a structured grid that also allows
      * building it from zero, using the StructuredGrid class in the com.iidp.vtk.grids package.
-     * @see {@link com.iidp.vtk.grids.StructuredGrid}
+     * @see @link com.iidp.vtk.grids.StructuredGrid
      *
      * @param path:       full path withouth extension where grid file should be saved.
      * @param x:          3D array with x coordinate of nodes in the grid, i.e. x[i][j][k] = x of node (i,j,k)
@@ -296,7 +296,6 @@ public class EVTK {
         assert (y.length == nnpoints);
         assert (z.length == nnpoints);
         assert (offsets.length == nncells);
-        assert (cell_types.length == nncells);
 
         vw.openUnstructuredGrid();
         vw.openPiece(nnpoints, nncells);
@@ -643,8 +642,8 @@ public class EVTK {
     /**
      * Creates and returns a VTKGroup that can be used to specify links to multiple VTK files that
      * can be used for animations or merging multiple files in a single scene.
-     * @see: The example contained in the high level interface
-     * {@link com.iidp.vtk.high_level.examples.ExGroup}
+     * See the example contained in the high level interface:
+     * @link com.iidp.vtk.high_level.examples.ExGroup
      *
      * @param path: path to file where group should be saved without extension.
      * @return VTKGroup to which path to other VTK files can be added.
@@ -672,8 +671,8 @@ public class EVTK {
     }
 
     /**
-     * Creates a List\<String\> to add/store text that should appear as comments in the XMl section.
-     * @return an empty List\<String\>.
+     * Creates a List(String) to add/store text that should appear as comments in the XMl section.
+     * @return an empty List(String).
      */
     public static List<String> makeComments() {
         var comments = new ArrayList<String>();

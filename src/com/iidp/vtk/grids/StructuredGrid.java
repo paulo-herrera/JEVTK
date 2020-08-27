@@ -29,6 +29,9 @@ import com.iidp.vtk.low_level.VTKWriter;
 
 /**
  * Provides helper methods to build and export a structured grid.
+ * This is a convenience class that can be useful if you need to create a grid
+ * from scratch.
+ * See {@link com.iidp.vtk.grids.examples.ExStructuredGrid} for an example.
  */
 public class StructuredGrid {
     /**
@@ -167,7 +170,7 @@ public class StructuredGrid {
         return this;
     }
 
-    // FIXME: THIS IS A HACK
+    /** Returns array with x-coordinate. */
     public double[] getX() {
         double[] x_ = new double[nnodes];
         for (int i = 0; i < x_.length; i++) {
@@ -176,6 +179,7 @@ public class StructuredGrid {
         return x_;
     }
 
+    /** Returns array with y-coordinate. */
     public double[] getY() {
         double[] y_ = new double[nnodes];
         for (int i = 0; i < y_.length; i++) {
@@ -184,6 +188,7 @@ public class StructuredGrid {
         return y_;
     }
 
+    /** Returns array with z-coordinate. */
     public double[] getZ() {
         double[] z_ = new double[nnodes];
         for (int i = 0; i < z_.length; i++) {
@@ -191,8 +196,8 @@ public class StructuredGrid {
         }
         return z_;
     }
-    // END HACK
 
+    // Helper class
     private static class OrderCoordinates implements Comparator {
         final int dim;
 
@@ -215,7 +220,12 @@ public class StructuredGrid {
     }
 
     /**
-     * NOTE: array values must be given in the grid order, i.e. x direction changing fastest
+     * Adds a variable associated to each cell of the grid.
+     *
+     * NOTE: array values must be given in the grid order,
+     * i.e. x direction changing fastest, then y, then z
+     * @param name variable name.
+     * @param var array with variable values. It should contains ncells elements.
      */
     public StructuredGrid addCellVariable(String name, double[] var) {
         assert (var.length == ncells);
@@ -225,7 +235,12 @@ public class StructuredGrid {
     }
 
     /**
-     * NOTE: array values must be given in the grid order, i.e. x direction changing fastest
+     * Adds a variable associated to each node of the grid.
+     *
+     * NOTE: array values must be given in the grid order,
+     * i.e. x direction changing fastest, then y, then z
+     * @param name variable name.
+     * @param var array with variable values. It should contains nnodes elements.
      */
     public StructuredGrid addNodeVariable(String name, double[] var) {
         assert (var.length == nnodes);
@@ -234,6 +249,12 @@ public class StructuredGrid {
         return this;
     }
 
+    /**
+     * Writes grid as a binary XML VTK file.
+     *
+     * @param filename full path to where grid should be saved.
+     * @throws Exception
+     */
     public void toVTK(String filename) throws Exception {
         System.out.println("Writing structured grid to file: " + filename);
         System.out.printf(" grid dims - nx: %d \t ny: %d \t nz: %d \n", nx, ny, nz);
@@ -297,6 +318,12 @@ public class StructuredGrid {
         vw.close();
     }
 
+    /**
+     * Writes grid as a pure ASCII XML VTK file.
+     *
+     * @param filename full path to where grid should be saved.
+     * @throws Exception
+     */
     public void toVTKAsASCII(String filename) throws Exception {
         System.out.println("Writing structured grid to file: " + filename);
         System.out.printf(" grid dims - nx: %d \t ny: %d \t nz: %d \n", nx, ny, nz);
@@ -333,53 +360,5 @@ public class StructuredGrid {
         vw.closePiece();
         vw.closeStructuredGrid();
         vw.close();
-    }
-
-    public static void main(String[] args) throws Exception {
-        final int nc = 5;
-        final int np = nc + 1;
-        final int ncells = nc * nc * nc;
-        final int nnodes = np * np * np;
-        final double dx = 0.1;
-        double x[] = new double[np * np * np];
-        double y[] = new double[np * np * np];
-        double z[] = new double[np * np * np];
-
-        double[] cellData = new double[ncells];
-        double[] nodeData = new double[nnodes];
-
-        int ii = 0;
-        // Note this loop has the wrong index order, however
-        // the coordinates are internally sorted, so it is not a problem.
-        for (int k = 0; k < np; k++) {
-            for (int i = 0; i < np; i++) {
-                for (int j = 0; j < np; j++) {
-                    x[ii] = i * dx;
-                    y[ii] = j * dx;
-                    z[ii] = k * dx;
-                    nodeData[ii] = ii;
-                    ii += 1;
-                }
-            }
-        }
-
-        for (int i = 0; i < ncells; i++) {
-            cellData[i] = i;
-        }
-
-        var ijk = new int[2][3];
-        ijk[0] = new int[]{0, 0, 0};
-        ijk[1] = new int[]{0, 1, 1};
-
-        var values = new double[2][2];
-        values[0] = new double[]{1.0, 0.0};
-        values[1] = new double[]{2.0, -0.1};
-
-        StructuredGrid sg = new StructuredGrid(np, np, np);
-        sg.setNodeCoordinates(x, y, z);
-        sg.addCellVariable("Pressure", cellData);
-        sg.addNodeVariable("Temperature", nodeData);
-        sg.addCellVariable("Drn_head", ijk, values, 0, -999.0);
-        sg.toVTKAsASCII("test.vts");
     }
 }

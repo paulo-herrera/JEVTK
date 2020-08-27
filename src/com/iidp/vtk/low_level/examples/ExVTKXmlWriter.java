@@ -11,7 +11,7 @@ import static com.iidp.vtk.high_level.EVTK.makeCellData;
 import static com.iidp.vtk.high_level.EVTK.makePointData;
 
 /**
- * Example of using the low-level interface provided by VTKXmlWriter to export and image VTK file.
+ * Example of using the low-level interface provided by VTKXmlWriter to export an image VTK file.
  */
 public class ExVTKXmlWriter {
 
